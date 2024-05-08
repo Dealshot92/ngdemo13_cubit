@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     homeCubit = BlocProvider.of<HomeCubit>(context);
-    homeCubit.onLoadPostListEvent();
+    homeCubit.onLoadPostList();
   }
 
   @override
@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text("Networking"),
+        title: const Text("Networking-Cubit"),
       ),
       body: BlocBuilder<HomeCubit, HomeState>(
         buildWhen: (previous, current) {
@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             SlidableAction(
               onPressed: (BuildContext context) {
-                homeCubit.onDeletePostEvent();
+                homeCubit.onDeletePost();
               },
               backgroundColor: Color(0xFFFE4A49),
               foregroundColor: Colors.white,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
 import 'package:ngdemo13_cubit/bloc/update_state.dart';
 
+import '../bloc/home_state.dart';
 import '../bloc/update_cubit.dart';
 import '../models/post_model.dart';
 
@@ -24,6 +27,7 @@ class _UpdatePageState extends State<UpdatePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    updateCubit = BlocProvider.of(context);
     updateCubit.titleController.text = widget.post.title!;
     updateCubit.bodyController.text = widget.post.body!;
 
@@ -41,36 +45,66 @@ class _UpdatePageState extends State<UpdatePage> {
         backgroundColor: Colors.blue,
         title: const Text("Update Post"),
       ),
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Container(
-              child: TextField(
-                controller: updateCubit.titleController,
-                decoration: const InputDecoration(hintText: "Title"),
-              ),
+      body: BlocBuilder<UpdateCubit, UpdateState>(
+        buildWhen: (previous, current){
+          return current is HomePostListState;
+        },
+        builder: (BuildContext context, UpdateState state) {
+          if (state is UpdateErrorState) {
+            return viewOfError(state.errorMessage);
+          }
+          if (state is UpdateLoadingState) {
+            return viewOfLoading();
+          }
+
+          return viewOfUpdatePost();
+        },
+      ),
+    );
+  }
+
+  Widget viewOfError(String err) {
+    return Center(
+      child: Text("Error occurred $err"),
+    );
+  }
+
+  Widget viewOfLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget viewOfUpdatePost(){
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Container(
+            child: TextField(
+              controller: updateCubit.titleController,
+              decoration: const InputDecoration(hintText: "Title"),
             ),
-            Container(
-              child: TextField(
-                controller: updateCubit.bodyController,
-                decoration: const InputDecoration(hintText: "Body"),
-              ),
+          ),
+          Container(
+            child: TextField(
+              controller: updateCubit.bodyController,
+              decoration: const InputDecoration(hintText: "Body"),
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 10),
-              width: double.infinity,
-              child: MaterialButton(
-                color: Colors.blue,
-                onPressed: () {
-                  updateCubit.onUpdatePost();
-                },
-                child: const Text("Add"),
-              ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            width: double.infinity,
+            child: MaterialButton(
+              color: Colors.blue,
+              onPressed: () {
+                updateCubit.onUpdatePost(context, widget.post);
+              },
+              child: const Text("Add"),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -20,6 +20,20 @@ class _CreatePageState extends State<CreatePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // TODO: implement initState
+    createCubit = BlocProvider.of(context);
+
+    createCubit.stream.listen((state) {
+      if (state is CreatedPostState) {
+        backToFinish();
+      }
+    });
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -69,7 +83,7 @@ class _CreatePageState extends State<CreatePage> {
                 createCubit.titleController.text.toString().trim();
                 String body = createCubit.bodyController.text.toString().trim();
 
-                // createCubit.add(CreatePostEvent(title, body));
+                createCubit.onCreatePost();
               },
               child: const Text("Create"),
             ),

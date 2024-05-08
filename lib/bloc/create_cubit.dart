@@ -1,6 +1,7 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ngdemo13_cubit/services/log_service.dart';
 
 import '../models/post_model.dart';
 import '../services/http_service.dart';
@@ -12,7 +13,7 @@ class CreateCubit extends Cubit<CreateState>{
 
   CreateCubit() : super(CreateInitialState());
 
-  Future<void> onCreatePostEvent() async {
+  Future<void> onCreatePost() async {
     emit(CreateLoadingState());
 
     String title = titleController.text.toString().trim();
@@ -22,6 +23,7 @@ class CreateCubit extends Cubit<CreateState>{
 
     var response =
     await Network.POST(Network.API_POST_CREATE, Network.paramsCreate(post));
+    LogService.d(response!);
     if (response != null) {
       emit(CreatedPostState(post));
     } else {

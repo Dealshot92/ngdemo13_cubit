@@ -15,7 +15,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   HomeCubit() : super(HomeInitialState());
 
-  Future<void> onLoadPostListEvent() async {
+  Future<void> onLoadPostList() async {
     emit(HomeLoadingState());
 
     var response =
@@ -29,7 +29,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> onDeletePostEvent() async {
+  Future<void> onDeletePost() async {
     emit(HomeLoadingState());
 
     var response =
@@ -67,11 +67,12 @@ class HomeCubit extends Cubit<HomeState> {
     }));
 
     if (result) {
-      // _loadPosts();
+      onLoadPostList();
+
     }
   }
 
   Future<void> handleRefresh() async {
-    // _loadPosts();
+    onLoadPostList();
   }
 }
